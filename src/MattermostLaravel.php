@@ -1,14 +1,16 @@
 <?php
 
 namespace Samrat415\MattermostLaravel;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Throwable;
-class MattermostLaravel {
 
+class MattermostLaravel
+{
     public function alert(Throwable $e, Request $request): void
     {
-        if (!config('mattermost-laravel.enabled') || empty(config('mattermost-laravel.webhook_url')) ) {
+        if (! config('mattermost-laravel.enabled') || empty(config('mattermost-laravel.webhook_url'))) {
             return;
         }
         $user = $request->user();
@@ -26,7 +28,7 @@ class MattermostLaravel {
                 'fields' => [
                     [
                         'title' => 'App / Env',
-                        'value' => config('app.name') . ' (`' . config('app.env') . '`)',
+                        'value' => config('app.name').' (`'.config('app.env').'`)',
                         'short' => true,
                     ],
                     [
@@ -41,7 +43,7 @@ class MattermostLaravel {
                     ],
                     [
                         'title' => 'User Info',
-                        'value' => '```json' . "\n" . json_encode($userInfo, JSON_PRETTY_PRINT) . "\n```",
+                        'value' => '```json'."\n".json_encode($userInfo, JSON_PRETTY_PRINT)."\n```",
                         'short' => false,
                     ],
                     [
@@ -56,30 +58,30 @@ class MattermostLaravel {
                     ],
                     [
                         'title' => 'Payload',
-                        'value' => '```json' . "\n" . json_encode($request->all(), JSON_PRETTY_PRINT) . "\n```",
+                        'value' => '```json'."\n".json_encode($request->all(), JSON_PRETTY_PRINT)."\n```",
                         'short' => false,
                     ],
                     [
                         'title' => 'Exception',
-                        'value' => '`' . $e->getMessage() . '`',
+                        'value' => '`'.$e->getMessage().'`',
                         'short' => false,
                     ],
                     [
                         'title' => 'File',
-                        'value' => '`' . $e->getFile() . '`',
+                        'value' => '`'.$e->getFile().'`',
                         'short' => true,
                     ],
                     [
                         'title' => 'Line',
-                        'value' => '`' . $e->getLine() . '`',
+                        'value' => '`'.$e->getLine().'`',
                         'short' => true,
                     ],
-                ]
-            ]]
+                ],
+            ]],
         ];
         try {
-             Http::post(config('mattermost-laravel.webhook_url'), $data);
-        }catch (\Exception $ex) {
+            Http::post(config('mattermost-laravel.webhook_url'), $data);
+        } catch (\Exception $ex) {
             throw $ex;
         }
     }
