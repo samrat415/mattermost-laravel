@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Samrat415\MattermostLaravel\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class MattermostLaravelCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'mattermost-laravel';
 
     public $description = 'My command';
 

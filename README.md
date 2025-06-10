@@ -1,93 +1,146 @@
-# :package_description
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/:vendor_slug/:package_slug/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/:vendor_slug/:package_slug/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/:vendor_slug/:package_slug.svg?style=flat-square)](https://packagist.org/packages/:vendor_slug/:package_slug)
-<!--delete-->
+# 🚨 Mattermost Laravel
+
+A Laravel package to send exception alerts directly to [Mattermost](https://mattermost.com) via incoming webhooks.  
+Built using [Spatie Laravel Package Tools](https://github.com/spatie/laravel-package-tools) for clean and automatic integration.
+
 ---
-This repo can be used to scaffold a Laravel package. Follow these steps to get started:
 
-1. Press the "Use this template" button at the top of this repo to create a new repo with the contents of this skeleton.
-2. Run "php ./configure.php" to run a script that will replace all placeholders throughout all the files.
-3. Have fun creating your package.
-4. If you need help creating a package, consider picking up our <a href="https://laravelpackage.training">Laravel Package Training</a> video course.
+## 🧭 Overview
+
+This package catches exceptions in non-API requests and automatically sends a rich, formatted message to your Mattermost channel with details like:
+
+- App/environment
+- Host
+- User info
+- URL & payload
+- Exception message, file, and line
+
 ---
-<!--/delete-->
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
-## Support us
+## 🖼️ Screenshots
 
-[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/:package_name.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/:package_name)
+**Step-by-step setup:**
 
-We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
+| Step | Image |
+|------|-------|
+| 1️⃣ Add incoming webhook | ![Step 1](screenshots/mattermost-step-1.png) |
+| 2️⃣ Configure channel & description | ![Step 2](screenshots/mattermost-step-2.png) |
+| 3️⃣ Copy the webhook URL | ![Step 3](screenshots/mattermost-step-3.png) |
 
-We highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using. You'll find our address on [our contact page](https://spatie.be/about-us). We publish all received postcards on [our virtual postcard wall](https://spatie.be/open-source/postcards).
+**Example Message on Web & Mobile:**
 
-## Installation
+| Web | Mobile |
+|-----|--------|
+| ![Web](screenshots/message-web.png) | ![Mobile](screenshots/message-mobile.jpg) |
 
-You can install the package via composer:
+---
 
-```bash
-composer require :vendor_slug/:package_slug
-```
-
-You can publish and run the migrations with:
-
-```bash
-php artisan vendor:publish --tag=":package_slug-migrations"
-php artisan migrate
-```
-
-You can publish the config file with:
+## 📦 Installation
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-config"
+composer require samrat415/mattermost-laravel
+````
+
+---
+
+## ⚙️ Setup
+
+### 1. 🧪 Create Incoming Webhook on Mattermost
+
+Follow the screenshots above or these steps:
+
+* Go to **Main Menu > Integrations > Incoming Webhooks**
+* Click **Add Incoming Webhook**
+* Select the channel and give a name like `Laravel Alerts`
+* Copy the generated **Webhook URL**
+
+---
+
+### 2. 🔐 Environment Variables
+
+Add the following to your `.env` file:
+
+```env
+MATTERMOST_WEBHOOK_URL=https://your-mattermost/hooks/your-webhook-url
+MATTERMOST_ALERT_ENABLED=true
+MATTERMOST_REDIRECT_BACK=true
 ```
 
-This is the contents of the published config file:
+| Key                        | Description                                               |
+| -------------------------- | --------------------------------------------------------- |
+| `MATTERMOST_WEBHOOK_URL`   | Your Mattermost webhook URL                               |
+| `MATTERMOST_ALERT_ENABLED` | Set to `false` to temporarily disable notifications       |
+| `MATTERMOST_REDIRECT_BACK` | Set to `false` to prevent redirecting back after an error |
 
-```php
-return [
-];
-```
+---
 
-Optionally, you can publish the views using
+### 3. ⚙️ Publish Config (Optional)
 
 ```bash
-php artisan vendor:publish --tag=":package_slug-views"
+php artisan vendor:publish --tag="mattermost-laravel-config"
 ```
 
-## Usage
+This will publish the configuration file to:
 
-```php
-$variable = new VendorName\Skeleton();
-echo $variable->echoPhrase('Hello, VendorName!');
+```
+config/mattermost-alert.php
 ```
 
-## Testing
+---
 
-```bash
-composer test
+## ✅ Automatic Exception Reporting
+
+This package automatically hooks into Laravel’s exception handling:
+
+* Only for **non-API web requests**
+* Catches exceptions and reports to Mattermost
+* Optionally redirects back with flash alert
+
+---
+
+## 🧾 Blade Alert Message (Optional UI)
+
+To show the alert message on your front-end after exception handling, add this snippet to your main layout file:
+
+```blade
+@if (session()->has('alert'))
+    <div class="alert alert m-2 bg bg-{{ session()->get('alert')['type'] }} p-4 text-white rounded alert-dismissible" role="alert">
+        <h4 class="alert-heading d-flex align-items-center">
+            <span class="alert-icon rounded-circle"
+                  style="border: 2px solid white; padding: 8px; display: inline-flex; align-items: center; justify-content: center;">
+                @if (session()->get('alert')['type'] === 'success')
+                    <i class="bx bx-coffee"></i>
+                @elseif(session()->get('alert')['type'] === 'danger')
+                    <i class="bx bx-error"></i>
+                @else
+                    <i class="bx bx-show"></i>
+                @endif
+            </span>
+            &nbsp;
+            {{ session()->get('alert')['title'] }}
+        </h4>
+        <hr>
+        <p class="mb-0">{{ session()->get('alert')['message'] }}</p>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
 ```
 
-## Changelog
+---
 
-Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+## 🧪 Testing
 
-## Contributing
+Throw an exception anywhere in your Laravel web route or controller to test.
+If everything is configured properly, the error will show up in your Mattermost channel.
 
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
+---
 
-## Security Vulnerabilities
+## 🔒 License
 
-Please review [our security policy](../../security/policy) on how to report security vulnerabilities.
+MIT © [Samrat Thapa](https://github.com/samrat415)
 
-## Credits
+```
 
-- [:author_name](https://github.com/:author_username)
-- [All Contributors](../../contributors)
-
-## License
-
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+Let me know if you want badges, composer.json info, or usage examples added too.
+```
