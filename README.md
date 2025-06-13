@@ -141,7 +141,4 @@ If everything is configured properly, the error will show up in your Mattermost 
 
 MIT © [Samrat Thapa](https://github.com/samrat415)
 
-```
 
-Let me know if you want badges, composer.json info, or usage examples added too.
-```
