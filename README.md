@@ -1,5 +1,6 @@
 
-# 🚨 Mattermost Laravel
+# 🚨 Mattermost Laravel [![Total Downloads](https://img.shields.io/packagist/dt/samrat415/khalti-laravel?style=for-the-badge&color=brightgreen)](https://packagist.org/packages/samrat415/khalti-laravel)
+
 
 A Laravel package to send exception alerts directly to [Mattermost](https://mattermost.com) via incoming webhooks.  
 Built using [Spatie Laravel Package Tools](https://github.com/spatie/laravel-package-tools) for clean and automatic integration.
