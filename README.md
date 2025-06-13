@@ -1,5 +1,5 @@
 
-# 🚨 Mattermost Laravel [![Total Downloads](https://img.shields.io/packagist/dt/samrat415/khalti-laravel?style=for-the-badge&color=brightgreen)](https://packagist.org/packages/samrat415/mattermost-laravel)
+# 🚨 Mattermost Laravel [![Total Downloads](https://img.shields.io/packagist/dt/samrat415/mattermost-laravel?style=for-the-badge&color=brightgreen)](https://packagist.org/packages/samrat415/mattermost-laravel)
 
 
 A Laravel package to send exception alerts directly to [Mattermost](https://mattermost.com) via incoming webhooks.  
